@@ -8,3 +8,5 @@ print(tst)
 
 tst2 = "Test github 2"
 print(tst2)
+test3 = "Test github 3"
+print(test3)

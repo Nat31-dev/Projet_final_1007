@@ -5,3 +5,6 @@ pd.crosstab(data, data.columns)
 
 tst = "Test github"
 print(tst)
+
+tst2 = "Test github 2"
+print(tst2)

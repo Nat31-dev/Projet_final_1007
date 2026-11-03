@@ -1,0 +1,1 @@
+Choix, Option_envisagé, choix_Retenu, Validation 

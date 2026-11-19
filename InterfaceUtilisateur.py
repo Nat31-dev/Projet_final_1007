@@ -175,4 +175,4 @@ boutton_predire.config(
               state="normal")
 
 
-window.mainloop()
+#window.mainloop()

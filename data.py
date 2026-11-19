@@ -56,7 +56,9 @@ class data_explorer:
         ax.grid(True, alpha=0.3)
 
         fig.tight_layout()
+        plt.savefig(titre)
         plt.show()
+
         return fig, ax
    
 

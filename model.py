@@ -11,13 +11,14 @@ import joblib as jb
 class model:
    def __init__(self,inputs:pd.core.frame.dataframe = None,output:np.ndarray = None, hidden_layer:int = 0, iter_max:int = 0, rng_state:int = 0,test_size:int = 0, file_path:str = "", stocked:bool = False  ):
       '''Si stocked = True, entrer le path vers le fichier où est stoqué le modèle, sinon mettre touts les autres variables pour initialiser le modèle.'''
+      inputs = model.numériser_categories(inputs)
+      self.__x_train, self.__x_test,self.__y_train,self.__y_test = sklearn.model_selection.train_test_split(inputs, output,random_state=rng_state, test_size=test_size)
       if not stocked:
-         inputs = model.numériser_categories(inputs)
-         self.__x_train, self.__x_test,self.__y_train,self.__y_test = sklearn.model_selection.train_test_split(inputs, output,random_state=rng_state, test_size=test_size)
          self.model = MLPRegressor(hidden_layer_sizes=(hidden_layer,), max_iter=iter_max, random_state=rng_state)
          self.__trained__ = False
       else:
          self.model = jb.load(filename=file_path )
+         self.__trained__ = True
 
    def train(self):
       '''Entraine le modèle et renvoi "entrainement du modèle réussi" si Trained  = False sinon renvoi "Le modèle à déja été entrainer."'''
@@ -31,7 +32,7 @@ class model:
    def R2_score(self) -> float:
       '''Retourne le score R2 de la courbe du modèle.'''
       return self.model.score(self.__x_test, self.__y_test)
-   def predict(self, to_predict:pd.core.frame.dataframe) -> int:
+   def predict(self, to_predict:pd.core.frame.dataframe) -> float:
       return self.model.predict(to_predict)
    @staticmethod
    def numériser_categories(df:pd.core.frame.dataframe):

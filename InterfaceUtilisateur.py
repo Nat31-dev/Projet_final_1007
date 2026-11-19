@@ -3,6 +3,9 @@ from tkinter import messagebox
 from tkinter import filedialog
 from tkinter import ttk
 import os
+import main
+import model
+
 
 
 
@@ -11,7 +14,6 @@ def assigner():
     """
     Assigne chaque variable dans la fonction de calcul du modele
     """
-
     domaine_etude = liste_domaine[domaine.get()]
     niveau_etude = liste_niveaux[niveau.get()]
     gpa_before = float(gpa_avant.get())
@@ -24,9 +26,42 @@ def assigner():
     dependance_percu = dependance.get()
     politique_ia = liste_politique[politique.get()]
     anxieu = anxiete.get()
-    gpa_after = float(gpa_apres.get())
+
+    student = model.create_student(domaine_etude, niveau_etude, gpa_before, heures,
+                                   usage, prompt, outils, abonnement_payant,
+                                   etude_trad, dependance_percu, politique_ia,
+                                   anxieu)
+    
+    new_gpa = main.mod.predict(student)
+
+    show_GPA(new_gpa)
+    create_figure_tabs()
 
 
+
+def create_figure_tabs():
+    """
+    Produit un onglet pour chacune des figures
+    """
+    folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures")
+    i = 1
+    for name in os.listdir(folder):
+        path = os.path.join(folder, name)
+        if os.path.isfile(path):
+            tab = tkinter.Frame(notebook)
+            notebook.add(tab, f"Figure #{i}")
+            figure = tkinter.PhotoImage(file=path)
+            tkinter.Label(tab, image=figure).pack()
+
+def show_GPA(new_gpa : int):
+    """
+    Produit un onglet pour le nouveaux GPA, puis l'affiche
+    """
+    tab = tkinter.Frame(notebook)
+    notebook.add(tab, "Nouveaux GPA")
+    tkinter.Label(tab, f"Votre nouveau GPA serait : {new_gpa}").pack()
+
+            
 
 window = tkinter.Tk()
 window.geometry("500x500")
@@ -34,6 +69,9 @@ window.title("Calcul du GPA selon analyse de données sur l'étudiant")
 icon = tkinter.PhotoImage(file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Images", "Polylogo.png"))
 window.iconphoto(True, icon)
 window.config(bg="#0d052c")
+
+notebook = ttk.Notebook(window)
+
 
 tkinter.Label(window, text = "Veuillez entrer les informations nécessaires : ", font=("Arial", 15, "bold")).grid(row=0, column=2)
 tkinter.Label(window, bg="#0d052c").grid(row=1,column=0)
@@ -137,10 +175,6 @@ for i in range(len(liste_politique)):
 tkinter.Label(window, text = "Combien d'heures étudiez-vous chaque semaine?").grid(row=13,column=3)
 etude = tkinter.Entry(window).grid(row=13, column=4)
 
-tkinter.Label(window, text = "Quel est votre GPA après le semestre?", width= 50).grid(row=19,column=3)
-gpa_apres = tkinter.Entry(window).grid(row=19, column=4)
-
-
 tkinter.Label(window, text = "Quel est votre niveau de dépendance à l'IA?").grid(row=27,column=3)
 dependance = tkinter.Scale(window,
                       from_ = 0,
@@ -175,4 +209,4 @@ boutton_predire.config(
               state="normal")
 
 
-window.mainloop()
+#window.mainloop()

@@ -39,7 +39,7 @@ class data_explorer:
         """
         for col in (col_y, col_x):
             if col not in self.df.columns:
-                raise KeyError(f"La colonne '{col}' est absente du DataFrame.")
+                raise exceptionData.categoryException(f"La colonne '{col}' est absente du DataFrame.")
 
         fig, ax = plt.subplots(figsize=(8, 5))
 

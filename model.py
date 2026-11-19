@@ -41,12 +41,11 @@ class model:
             "Freshman":1,"Sophomore": 2,"Junior" :3,"Senior":4, "Graduate":5,
             "Copywriting/Drafting" : 1, "Ideation":2, "Summarizing_Reading" : 3, "Debugging/Troubleshooting" : 4,"Direct_Answer_Generation" : 5,
             "Beginner" : 1, "Intermediate" : 2, "Advanced" : 3,
-            "Allowed_With_Citation" : 1, "Strict_Ban" :2, "Actively_Encouraged" : 3,
-            "Low" : 1, "Medium" : 2, "High" :3
+            "Allowed_With_Citation" : 1, "Strict_Ban" :2, "Actively_Encouraged" : 3
             }
       return df.replace(cat, inplace=False)
    @staticmethod
-   def  create_student(Major:str,Year_of_Study:str, Pre_Semester_GPA:float,Weekly_GenAI_Hours:float, Primary_Use_Case:str,Prompt_Engineering_Skill:str,Tool_Diversity:int, Paid_Subscription:bool, Traditional_Study_Hours:float, Perceived_AI_Dependency:int,Institutional_Policy:str,Anxiety_Level_During_Exams:int, Skill_Retention_Score:float,Burnout_Risk_Level:str) -> pd.core.frame.dataframe:
+   def  create_student(Major:str,Year_of_Study:str, Pre_Semester_GPA:float,Weekly_GenAI_Hours:float, Primary_Use_Case:str,Prompt_Engineering_Skill:str,Tool_Diversity:int, Paid_Subscription:bool, Traditional_Study_Hours:float, Perceived_AI_Dependency:int,Institutional_Policy:str,Anxiety_Level_During_Exams:int) -> pd.core.frame.dataframe:
       """"""
       dic = {
          "Major_Category" : [Major],
@@ -60,9 +59,7 @@ class model:
          "Traditional_Study_Hours" : [Traditional_Study_Hours],
          "Perceived_AI_Dependency" : [Perceived_AI_Dependency],
          "Institutional_Policy" : [Institutional_Policy],
-         "Anxiety_Level_During_Exams" : [Anxiety_Level_During_Exams],
-         "Skill_Retention_Score" : [Skill_Retention_Score],
-         "Burnout_Risk_Level" : [Burnout_Risk_Level]
+         "Anxiety_Level_During_Exams" : [Anxiety_Level_During_Exams]
       }
       return model.numériser_categories(pd.DataFrame(dic))
    def save_model(self):

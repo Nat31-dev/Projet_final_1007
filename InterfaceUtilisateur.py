@@ -1,9 +1,7 @@
 import tkinter as tkinter
 from tkinter import messagebox
-from tkinter import filedialog
-from tkinter import ttk
 import os
-import model
+from model import model
 from data import data_explorer 
 
 
@@ -27,7 +25,7 @@ def assigner():
     politique_ia = liste_politique[politique.get()]
     anxieu = anxiete.get()
 
-    stock = False
+    stock = True
     if not stock:
         donne = data_explorer("donnees.csv")
         out = donne.df["Post_Semester_GPA"]
@@ -36,7 +34,10 @@ def assigner():
         print(mod.train())
         mod.save_model()
     else:
-        mod = model(file_path="model_file", stocked=stock)
+        donne = data_explorer("donnees.csv")
+        out = donne.df["Post_Semester_GPA"]
+        donne.suprimer_categories(["Student_ID", "Post_Semester_GPA", "Skill_Retention_Score", "Burnout_Risk_Level"], True)
+        mod = model(file_path="model_file", inputs=donne.df,output=out.values.ravel(),hidden_layer=10, iter_max=20000, rng_state=0, test_size=0.3,stocked=stock)
 
     student = model.create_student(domaine_etude, niveau_etude, gpa_before, heures,
                                    usage, prompt, outils, abonnement_payant,
@@ -44,6 +45,7 @@ def assigner():
                                    anxieu)
     
     new_gpa = mod.predict(student)
+    print(new_gpa)
 
     show_GPA(new_gpa)
     create_figure_tabs()
@@ -52,25 +54,31 @@ def assigner():
 
 def create_figure_tabs():
     """
-    Produit un onglet pour chacune des figures
+    Produit une fenetre pour chacune des figures
     """
+
+
     folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figures")
     i = 1
     for name in os.listdir(folder):
         path = os.path.join(folder, name)
         if os.path.isfile(path):
-            tab = tkinter.Frame(notebook)
-            notebook.add(tab, f"Figure #{i}")
-            figure = tkinter.PhotoImage(file=path)
-            tkinter.Label(tab, image=figure).pack()
+            print(path)
+            win = tkinter.Tk()
+            figure = tkinter.PhotoImage(master=win, file=path)
+            label = tkinter.Label(win, image=figure)
+            label.image = figure
+            label.pack()
+            
 
 def show_GPA(new_gpa : int):
     """
-    Produit un onglet pour le nouveaux GPA, puis l'affiche
+    Produit une fenetre pour le nouveaux GPA, puis l'affiche
     """
-    tab = tkinter.Frame(notebook)
-    notebook.add(tab, "Nouveaux GPA")
-    tkinter.Label(tab, f"Votre nouveau GPA serait : {new_gpa}").pack()
+    win = tkinter.Tk()
+    win.title("Nouveaux GPA")
+    label = tkinter.Label(win, text=f"Votre nouveau GPA serait : {new_gpa}", font=("Arial", 30, "bold"))
+    label.pack()
 
             
 
@@ -80,8 +88,6 @@ window.title("Calcul du GPA selon analyse de données sur l'étudiant")
 icon = tkinter.PhotoImage(file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Images", "Polylogo.png"))
 window.iconphoto(True, icon)
 window.config(bg="#0d052c")
-
-notebook = ttk.Notebook(window)
 
 
 tkinter.Label(window, text = "Veuillez entrer les informations nécessaires : ", font=("Arial", 15, "bold")).grid(row=0, column=2)
@@ -111,13 +117,15 @@ tkinter.Label(window, bg="#0d052c").grid(row=12, column=0)
 tkinter.Label(window, bg="#0d052c").grid(row=12, column=1)
 
 tkinter.Label(window, text = "Quel est votre GPA avant le semestre?").grid(row=13,column=0)
-gpa_avant = tkinter.Entry(window).grid(row=13, column=1)
+gpa_avant = tkinter.Entry(window)
+gpa_avant.grid(row=13, column=1)
 tkinter.Label(window, bg="#0d052c").grid(row=14, column=0)
 tkinter.Label(window, bg="#0d052c").grid(row=14, column=1)
 
 
 tkinter.Label(window, text = "Combien d'heure utilisez-vous l'IA générative chaque semaine?").grid(row=15,column=0)
-heure_ia_semaine = tkinter.Entry(window).grid(row=15, column=1)
+heure_ia_semaine = tkinter.Entry(window)
+heure_ia_semaine.grid(row=15, column=1)
 tkinter.Label(window, bg="#0d052c").grid(row=16, column=0)
 tkinter.Label(window, bg="#0d052c").grid(row=16, column=1)
 
@@ -185,7 +193,8 @@ for i in range(len(liste_politique)):
 
 
 tkinter.Label(window, text = "Combien d'heures étudiez-vous chaque semaine?").grid(row=13,column=3)
-etude = tkinter.Entry(window).grid(row=13, column=4)
+etude = tkinter.Entry(window)
+etude.grid(row=13, column=4)
 
 tkinter.Label(window, text = "Quel est votre niveau de dépendance à l'IA?").grid(row=27,column=3)
 dependance = tkinter.Scale(window,

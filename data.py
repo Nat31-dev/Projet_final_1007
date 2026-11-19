@@ -16,7 +16,7 @@ class data_explorer:
         for i in categories:
             if not i in self.df.columns:
                 raise exceptionData.categoryException(f"{i} ne fait pas partie des catégories.")
-        return self.df.drop(columns = categories, axis=1, inplace=inplaces)
+        return self.df.drop(columns = categories, inplace=inplaces)
 
     
 

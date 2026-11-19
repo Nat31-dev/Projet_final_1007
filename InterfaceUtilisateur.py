@@ -3,8 +3,8 @@ from tkinter import messagebox
 from tkinter import filedialog
 from tkinter import ttk
 import os
-import main
 import model
+from data import data_explorer 
 
 
 
@@ -27,12 +27,23 @@ def assigner():
     politique_ia = liste_politique[politique.get()]
     anxieu = anxiete.get()
 
+    stock = False
+    if not stock:
+        donne = data_explorer("donnees.csv")
+        out = donne.df["Post_Semester_GPA"]
+        donne.suprimer_categories(["Student_ID", "Post_Semester_GPA", "Skill_Retention_Score", "Burnout_Risk_Level"], True)
+        mod = model(inputs=donne.df,output=out.values.ravel(),hidden_layer=10, iter_max=20000, rng_state=0, test_size=0.3,stocked=stock )
+        print(mod.train())
+        mod.save_model()
+    else:
+        mod = model(file_path="model_file", stocked=stock)
+
     student = model.create_student(domaine_etude, niveau_etude, gpa_before, heures,
                                    usage, prompt, outils, abonnement_payant,
                                    etude_trad, dependance_percu, politique_ia,
                                    anxieu)
     
-    new_gpa = main.mod.predict(student)
+    new_gpa = mod.predict(student)
 
     show_GPA(new_gpa)
     create_figure_tabs()
@@ -103,6 +114,7 @@ tkinter.Label(window, text = "Quel est votre GPA avant le semestre?").grid(row=1
 gpa_avant = tkinter.Entry(window).grid(row=13, column=1)
 tkinter.Label(window, bg="#0d052c").grid(row=14, column=0)
 tkinter.Label(window, bg="#0d052c").grid(row=14, column=1)
+
 
 tkinter.Label(window, text = "Combien d'heure utilisez-vous l'IA générative chaque semaine?").grid(row=15,column=0)
 heure_ia_semaine = tkinter.Entry(window).grid(row=15, column=1)

@@ -9,7 +9,7 @@ import joblib as jb
 
 
 class model:
-   def __init__(self,inputs:pd.core.frame.dataframe = None,output:np.ndarray = None, hidden_layer:int = 0, iter_max:int = 0, rng_state:int = 0,test_size:int = 0, file_path:str = "", stocked:bool = False  ):
+   def __init__(self,inputs:pd.core.frame.DataFrame = None,output:np.ndarray = None, hidden_layer:int = 0, iter_max:int = 0, rng_state:int = 0,test_size:int = 0, file_path:str = "", stocked:bool = False  ):
       '''Si stocked = True, entrer le path vers le fichier où est stoqué le modèle, sinon mettre touts les autres variables pour initialiser le modèle.'''
       inputs = model.numériser_categories(inputs)
       self.__x_train, self.__x_test,self.__y_train,self.__y_test = sklearn.model_selection.train_test_split(inputs, output,random_state=rng_state, test_size=test_size)
@@ -32,10 +32,10 @@ class model:
    def R2_score(self) -> float:
       '''Retourne le score R2 de la courbe du modèle.'''
       return self.model.score(self.__x_test, self.__y_test)
-   def predict(self, to_predict:pd.core.frame.dataframe) -> float:
+   def predict(self, to_predict:pd.core.frame.DataFrame) -> float:
       return self.model.predict(to_predict)
    @staticmethod
-   def numériser_categories(df:pd.core.frame.dataframe):
+   def numériser_categories(df:pd.core.frame.DataFrame):
       '''Prend en entré le dataframe contenant les variables et remplace les variables catégoricielles par des entiers'''
       cat = {
             "Humanities": 1, "Medical": 2, "Business": 3,"STEM": 4,"Arts": 5,
@@ -46,7 +46,7 @@ class model:
             }
       return df.replace(cat, inplace=False)
    @staticmethod
-   def  create_student(Major:str,Year_of_Study:str, Pre_Semester_GPA:float,Weekly_GenAI_Hours:float, Primary_Use_Case:str,Prompt_Engineering_Skill:str,Tool_Diversity:int, Paid_Subscription:bool, Traditional_Study_Hours:float, Perceived_AI_Dependency:int,Institutional_Policy:str,Anxiety_Level_During_Exams:int) -> pd.core.frame.dataframe:
+   def  create_student(Major:str,Year_of_Study:str, Pre_Semester_GPA:float,Weekly_GenAI_Hours:float, Primary_Use_Case:str,Prompt_Engineering_Skill:str,Tool_Diversity:int, Paid_Subscription:bool, Traditional_Study_Hours:float, Perceived_AI_Dependency:int,Institutional_Policy:str,Anxiety_Level_During_Exams:int) -> pd.core.frame.DataFrame:
       """"""
       dic = {
          "Major_Category" : [Major],
